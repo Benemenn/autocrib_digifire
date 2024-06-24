@@ -5,10 +5,10 @@
 #include <Adafruit_NeoPixel.h>
 
 // PIN where NeoPixels are connected
-const byte LEDPIN = 14;
+const uint8_t LEDPIN = 14;
 
 // Number of NeoPixels in the strip
-const byte NUMPIXELS = 30;
+const uint8_t NUMPIXELS = 30;
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
 
