@@ -1,16 +1,23 @@
-//Disclaimer: This code was partially extended by the aid of ChatGPT.
-
-
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
 
 // PIN where NeoPixels are connected
-const uint8_t LEDPIN = 14;
+const uint8_t LEDPIN_1 = 3;
+const uint8_t LEDPIN_2 = 4;
+const uint8_t LEDPIN_3 = 5;
+const uint8_t LEDPIN_4 = 6;
+const uint8_t LEDPIN_5 = 7;
 
 // Number of NeoPixels in the strip
 const uint8_t NUMPIXELS = 30;
 
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ring1 = Adafruit_NeoPixel(22, LEDPIN_1, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ring2 = Adafruit_NeoPixel(16, LEDPIN_2, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ring3 = Adafruit_NeoPixel(20, LEDPIN_3, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ring4 = Adafruit_NeoPixel(24, LEDPIN_4, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ring5 = Adafruit_NeoPixel(28, LEDPIN_5, NEO_GRB + NEO_KHZ800);
+
+const uint8_t brightness = 200;
 
 /**
  * @brief A structure to hold delay related information.
@@ -50,6 +57,9 @@ float randomFloat(float min, float max) {
  * @return uint32_t A 32-bit color value in RGB format
  */
 uint32_t randomFireColor() {
+
+  Adafruit_NeoPixel temp;
+
   float fHue;
 
   // hue range on the color wheel in degrees (rotation in mathematic positive direction)
@@ -62,32 +72,62 @@ uint32_t randomFireColor() {
   uint8_t s = random(250, 255);   
 
   // play with brightness settings to make the fire flicker
-  uint8_t v = random(80, 255);   
+  uint8_t v = random(50, 255);   
 
   // Return a 32-bit color value in RGB format
-  return pixels.ColorHSV(h_scaled, s, v);
+  return temp.ColorHSV(h_scaled, s, v);
 }
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 void setup() {
-  pixels.begin(); // Initialize the NeoPixel library
-  pixels.setBrightness(255);
+  ring1.begin(); // Initialize the NeoPixel library
+  ring2.begin();
+  ring3.begin();
+  ring4.begin();
+  ring5.begin();
+
+  ring1.setBrightness(brightness);
+  ring2.setBrightness(brightness);
+  ring3.setBrightness(brightness);
+  ring4.setBrightness(brightness);
+  ring5.setBrightness(brightness);
+
+  ring1.clear();
+  ring2.clear();
+  ring3.clear();
+  ring4.clear();
+  ring5.clear();
+
+  ring1.show();
+  ring2.show();
+  ring3.show();
+  ring4.show();
+  ring5.show();
 }
 
 void loop() {
-  // Create a fire effect by randomly changing colors and brightness
-  for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, randomFireColor());
+
+  // Non-blocking delay mechanism
+  if (millis() - setDelay.lastTimeStamp > setDelay.delayTime) {
+    setDelay.lastTimeStamp = millis();
+    setDelay.delayTime = random(100, 200); // Random delay between 90 and 150 milliseconds
+
+
+
+      // Create a fire effect by randomly changing colors and brightness
+    for (int i = 0; i < NUMPIXELS; i++) {
+      ring1.setPixelColor(i, randomFireColor());
+      ring2.setPixelColor(i, randomFireColor());
+      ring3.setPixelColor(i, randomFireColor());
+      ring4.setPixelColor(i, randomFireColor());
+      ring5.setPixelColor(i, randomFireColor());
+    }
+
+    ring1.show();
+    ring2.show();
+    ring3.show();
+    ring4.show();
+    ring5.show();
   }
-
-  pixels.show();
-
-
-  while(setDelay.delayTime + setDelay.lastTimeStamp < millis()){
-    //wait
-  }
-
-  setDelay.lastTimeStamp = millis();
-  setDelay.delayTime = random(90, 150); // Random delay between 90 and 150 milliseconds
 }
